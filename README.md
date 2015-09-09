@@ -1,2 +1,70 @@
 # c5_badass_badminton
 Simple 2d badminton game
+
+## scope
+- Game area with
+  - background image
+  - 1 AI player, comprised of div with shifting images
+  - 1 birdie
+  - 1 player racket, that follows the player's mouse around
+- Game Control Area
+  - Start button
+  - Score display
+  - High score
+- Player object:
+  - init - initializes the player object with:
+    - score
+    - DOM visual representation
+    - DOM audio representation
+    - mouse tracking events
+    - birdie heartbeat (for tracking birdie travel time)
+    - opponent - the current AI opponent pointer
+    - type - NPC or PC
+    - difficulty - null if PC, 0-10 for NPC
+    - move_speed - how fast a Player's position can move to keep up with racket target point
+    - current_X_percent - current virtual X of the Player, representing a percent
+  - swing_racket 
+    - plays swing animation
+    - plays swing sound
+    - calls hit_check
+  - hit_check
+    - checks if birdie is hit by racket
+    - on hit, calls birdie_hit
+    - on miss, calls birdie_miss
+  - birdie_hit
+    - plays hit sound
+    - calculate birdie hit area of racket (rim or center)
+    - calculates birdie trajectory
+    - calls birdie_animate
+  - birdie_miss
+    - random trigger opponent.trash_talk
+    - call opponent.score_increase
+  - birdie_animate
+    - animates birdie as it flies between player and AI, or vice versa
+  - score_increase
+    - increase the player's score by 1
+  - trash_talk
+    - randomly plays one trash talk sound appropriate to currently represented player
+  - choose_image_set
+    - load current image set for represented player
+  - animate
+    - play appropriate animation with subtype:
+      - swing left
+      - swing right
+      - swing high
+      - swing low
+      - dodge
+      - cheer
+      - trash_talk
+      - jeer
+    - if multiple animations present, will choose one randomly
+    - if NPC, will play in distance
+    - if PC, will play in foreground
+  - move
+    - moves object's base representation left or right to be within arm_length of mouse.
+    - animation happens over time, so player / NPC could be out of position to hit a shot
+- AI inherits from Player:
+  - choose_action
+    - will choose appropriate action depending on relative position between object screen representation and birdie representation
+    - will adjust hit "area" based on difficulty setting.  Higher difficulty will have a smaller margin of error
+    - will trigger animation required to achieve desired outcome
